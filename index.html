@@ -1,23 +1,24 @@
 
             
-<!DOCTYPE html>
+                                <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shadow Syndicate: Contractor Simulator</title>
+    <title>Shadow Syndicate: The Blood Merchant</title>
     <style>
         :root {
-            --bg-color: #121212;
-            --panel-color: #1e1e1e;
-            --accent-color: #8b0000;
-            --accent-bright: #ff3333;
-            --text-color: #e0e0e0;
-            --text-dark: #a0a0a0;
+            --bg-color: #0b0b0f;
+            --panel-color: #14141c;
+            --accent-color: #5a0000;
+            --accent-bright: #ff2a2a;
+            --text-color: #e5e5e5;
+            --text-dark: #7a7a85;
+            --money-green: #2ecc71;
         }
 
         body {
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Consolas', 'Courier New', monospace;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
@@ -28,191 +29,164 @@
 
         .game-container {
             width: 100%;
-            max-width: 900px;
+            max-width: 1050px;
             background: var(--panel-color);
-            padding: 20px;
-            border: 2px solid var(--accent-color);
-            box-shadow: 0 0 20px rgba(139, 0, 0, 0.5);
-            border-radius: 5px;
+            padding: 25px;
+            border: 1px solid #2a2a35;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            border-radius: 6px;
         }
 
         header {
             text-align: center;
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            border-bottom: 1px solid #2a2a35;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
         }
 
         h1 {
             color: var(--accent-bright);
             margin: 0;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px rgba(255, 42, 42, 0.3);
         }
 
-        /* Stats Bar */
+        /* Complex Stats grid */
         .stats-bar {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 15px;
-            background: #151515;
+            background: #0e0e14;
             padding: 15px;
             border-radius: 4px;
-            margin-bottom: 20px;
-            border: 1px solid #333;
+            margin-bottom: 25px;
+            border: 1px solid #22222e;
         }
 
-        .stat-box {
-            text-align: center;
-        }
+        .stat-box { text-align: center; }
+        .stat-label { font-size: 0.75rem; color: var(--text-dark); text-transform: uppercase; letter-spacing: 1px;}
+        .stat-value { font-size: 1.2rem; font-weight: bold; color: var(--text-color); margin-top: 5px; }
+        .stat-value.money { color: var(--money-green); }
+        .stat-value.danger { color: var(--accent-bright); }
 
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-dark);
-            text-transform: uppercase;
-        }
-
-        .stat-value {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--text-color);
-            margin-top: 5px;
-        }
-
-        .stat-value.highlight {
-            color: #ffd700;
-        }
-        .stat-value.danger {
-            color: var(--accent-bright);
-        }
-
-        /* Main Game Layout */
-        .main-content {
+        /* Multi-Column Layout */
+        .grid-layout {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr 320px;
             gap: 20px;
         }
 
         .panel {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            padding: 15px;
+            background: #111117;
+            border: 1px solid #22222e;
+            padding: 20px;
             border-radius: 4px;
+            position: relative;
         }
 
         .panel-title {
-            font-size: 1.1rem;
-            color: var(--accent-bright);
+            font-size: 1rem;
+            color: var(--text-color);
             margin-top: 0;
             margin-bottom: 15px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 5px;
+            border-left: 3px solid var(--accent-bright);
+            padding-left: 10px;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        /* Mission List */
-        .mission-list {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
+        /* Missions list */
+        .mission-list { max-height: 400px; overflow-y: auto; }
         .mission-card {
-            background: #252525;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-left: 4px solid var(--accent-color);
-            border-radius: 0 4px 4px 0;
+            background: #181822;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid #252535;
+            border-radius: 4px;
             cursor: pointer;
             transition: 0.2s;
         }
+        .mission-card:hover { border-color: var(--accent-bright); background: #1c1c28; }
+        .m-header { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px; }
 
-        .mission-card:hover {
-            background: #303030;
-            border-left-color: var(--accent-bright);
-        }
-
-        .mission-header {
+        /* Black Market Inventory */
+        .market-item {
             display: flex;
             justify-content: space-between;
-            font-weight: bold;
-            margin-bottom: 5px;
+            align-items: center;
+            background: #15151f;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 3px;
+            font-size: 0.85rem;
+            border: 1px solid #22222e;
         }
+        .market-item.owned { border-left: 2px solid var(--money-green); }
 
-        /* Active Mission Controls */
-        .game-step {
-            display: none;
-        }
-
-        .game-step.active {
-            display: block;
-        }
-
-        .action-buttons {
+        /* Dynamic Operations flow buttons */
+        .options-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 10px;
             margin-top: 15px;
         }
 
-        button {
-            background: #2b2b2b;
+        .opt-btn {
+            background: #1a1a26;
             color: var(--text-color);
-            border: 1px solid var(--accent-color);
-            padding: 10px 15px;
-            font-family: inherit;
+            border: 1px solid #34344a;
+            padding: 12px;
+            text-align: left;
             cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
+            font-family: inherit;
             border-radius: 4px;
+            transition: 0.2s;
         }
-
-        button:hover:not(:disabled) {
-            background: var(--accent-color);
-            color: white;
-            box-shadow: 0 0 8px rgba(255, 51, 51, 0.4);
+        .opt-btn:hover:not(:disabled) {
+            background: #222233;
+            border-color: var(--accent-bright);
         }
+        .opt-btn:disabled { opacity: 0.25; cursor: not-allowed; }
 
-        button:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            border-color: #333;
-        }
-
-        /* Log / Console */
-        .log-box {
-            background: #0a0a0a;
-            border: 1px solid #222;
-            padding: 10px;
-            font-size: 0.9rem;
-            color: #39ff14; /* Terminal green */
-            height: 120px;
+        /* Dynamic Console Output */
+        .console-box {
+            background: #07070a;
+            border: 1px solid #1a1a26;
+            padding: 12px;
+            font-size: 0.85rem;
+            color: #ff5555;
+            height: 100px;
             overflow-y: auto;
             margin-top: 15px;
             border-radius: 4px;
         }
 
-        /* Progress Bar */
-        .progress-container {
-            background-color: #333;
-            border-radius: 4px;
-            margin: 15px 0;
-        }
+        /* Progress indicator */
+        .prog-bg { background: #222; border-radius: 3px; height: 6px; margin: 15px 0; overflow: hidden; }
+        .prog-bar { width: 0%; height: 100%; background: var(--accent-bright); transition: width 0.3s; }
 
-        .progress-bar {
-            width: 0%;
-            height: 10px;
-            background-color: var(--accent-bright);
-            border-radius: 4px;
-            transition: width 0.4s ease;
-        }
-
-        /* Screen States */
+        /* UI Helpers */
         .hidden { display: none !important; }
+        .text-purple { color: #bb86fc; }
+        .text-orange { color: #ff9f43; }
         
-        .game-over {
-            text-align: center;
-            color: var(--accent-bright);
-            padding: 40px;
+        .btn-action {
+            background: var(--accent-color);
+            color: #fff; border: none; padding: 10px 15px;
+            font-family: inherit; font-weight: bold; cursor: pointer; border-radius: 3px;
+        }
+        .btn-action:hover { background: var(--accent-bright); }
+
+        /* Drama Callout Box */
+        .drama-box {
+            background: #1c0d0d;
+            border: 1px solid var(--accent-bright);
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            line-height: 1.4;
         }
     </style>
 </head>
@@ -220,346 +194,476 @@
 
 <div class="game-container">
     <header>
-        <h1>Shadow Syndicate</h1>
-        <p style="margin: 5px 0 0 0; color: var(--text-dark); font-size: 0.85rem;">Contract Killer Simulator</p>
+        <h1>Shadow Syndicate: Variable Risk</h1>
+        <p style="margin: 5px 0 0 0; color: var(--text-dark); font-size: 0.8rem;">Contracting Matrix v2.6 // Run High-Stakes Operations</p>
     </header>
 
-    <!-- Stats Dashboard -->
+    <!-- Unified Dashboard -->
     <div class="stats-bar">
         <div class="stat-box">
-            <div class="stat-label">Net Worth</div>
-            <div class="stat-value highlight" id="stat-money">$2,500</div>
+            <div class="stat-label">Crypto Clean Balance</div>
+            <div class="stat-value money" id="stat-money">$4,000</div>
         </div>
         <div class="stat-box">
-            <div class="stat-label">Energy</div>
+            <div class="stat-label">Stamina / Energy</div>
             <div class="stat-value" id="stat-energy">100/100</div>
         </div>
         <div class="stat-box">
-            <div class="stat-label">Intellect (IQ)</div>
-            <div class="stat-value" id="stat-iq">110</div>
+            <div class="stat-label">Criminal IQ</div>
+            <div class="stat-value" id="stat-iq">100</div>
         </div>
         <div class="stat-box">
-            <div class="stat-label">Police Suspicion</div>
+            <div class="stat-label">Federal Suspicion</div>
             <div class="stat-value danger" id="stat-suspicion">0%</div>
         </div>
     </div>
 
-    <!-- Main Screens -->
-    <div class="main-content" id="main-screen">
+    <!-- Main Workspace Matrix -->
+    <div class="grid-layout" id="main-interface">
         
-        <!-- Mission Selection Screen -->
-        <div id="screen-intel" class="panel">
-            <div class="panel-title">Available Contracts (Missions Completed: <span id="completed-count">0</span>/100)</div>
-            <div class="mission-list" id="mission-container">
-                <!-- JavaScript populates 100 missions here -->
+        <!-- Left Side: Dynamic Ops / Contracts Screen -->
+        <div class="main-column">
+            
+            <!-- Matrix Screen 1: Contracts and Hub -->
+            <div id="panel-hub" class="panel">
+                <div class="panel-title">Secure Server: Active Feeds (<span id="comp-count">0</span>/100 Completed)</div>
+                <div class="mission-list" id="feed-container"></div>
+                <div style="margin-top: 15px; display:flex; gap: 10px;">
+                    <button class="btn-action" onclick="trainStats('iq', 800, 6)" style="background:#222; border:1px solid #444;">Upgrade Tradecraft (-$800, +6 IQ)</button>
+                    <button class="btn-action" onclick="trainStats('energy', 0, 40)" style="background:#222; border:1px solid #444;">Rest / Regain Physical (+40 Energy)</button>
+                </div>
             </div>
-            <div style="margin-top: 15px; text-align: right;">
-                <button onclick="trainIQ()">Train IQ (-$500, +5 IQ)</button>
-                <button onclick="restEnergy()">Rest (+40 Energy)</button>
+
+            <!-- Matrix Screen 2: Negotiations & Active Mission Phase -->
+            <div id="panel-operation" class="panel hidden">
+                <div class="panel-title" id="op-title">Intercepting Communications...</div>
+                
+                <div class="prog-bg"><div class="prog-bar" id="op-progress"></div></div>
+
+                <!-- Dynamic Drama Prompt Box -->
+                <div class="drama-box" id="op-drama-text"></div>
+
+                <!-- STEP 0: BARGAINING PHASE -->
+                <div id="phase-negotiate" class="hidden">
+                    <p><strong>Establish Your Terms:</strong> The client offered a baseline fee. How aggressively will you exploit this contract?</p>
+                    <p style="font-size:0.8rem; color:var(--text-dark);">Greedy demands might compromise safety or scare clients off completely.</p>
+                    <div class="options-grid">
+                        <button class="opt-btn" onclick="bargain(0)">Accept Baseline Rate (Safest: 0% Suspicion increase)</button>
+                        <button class="opt-btn" onclick="bargain(20)">Demand Premium Hazard Pay (+20% Money, +5% Initial Suspicion)</button>
+                        <button class="opt-btn" onclick="bargain(50)">Exort/Blackmail Client (+50% Money, +20% Risk of Client panicking/calling cops)</button>
+                    </div>
+                </div>
+
+                <!-- STEP 1: METHOD & TOOL COMBINATION -->
+                <div id="phase-execution" class="hidden">
+                    <p><strong>Select Execution Scheme & Asset Tool:</strong></p>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div>
+                            <span style="font-size:0.8rem; color:var(--text-dark);">Tactical Method:</span>
+                            <select id="select-method" style="width:100%; padding:8px; background:#1a1a26; color:#fff; border:1px solid #333; margin-top:5px;">
+                                <option value="stalk">Silent Stalk & Ambush (Uses 35 Energy, Low Base Evidence)</option>
+                                <option value="blunt">Unchecked Violent Chaos (Uses 15 Energy, High Base Evidence)</option>
+                                <option value="setup">Staged Fatal Accident (Uses 60 Energy, Zero Base Evidence)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <span style="font-size:0.8rem; color:var(--text-dark);">Required Hardware Asset:</span>
+                            <select id="select-tool" style="width:100%; padding:8px; background:#1a1a26; color:#fff; border:1px solid #333; margin-top:5px;">
+                                <!-- Dynamically populated by JS based on inventory -->
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn-action" onclick="commitExecution()" style="margin-top:15px; width:100%;">Execute Planned Strike</button>
+                </div>
+
+                <!-- STEP 2: BODY DISPOSAL -->
+                <div id="phase-disposal" class="hidden">
+                    <p><strong>Body Disposal Phase:</strong> How are you breaking down the scene parameters?</p>
+                    <div class="options-grid" id="disposal-options"></div>
+                </div>
+
+                <!-- STEP 3: CLEANUP FORENSICS -->
+                <div id="phase-cleanup" class="hidden">
+                    <p><strong>Forensic Countermeasures:</strong> Scrubbing the biological signatures left behind.</p>
+                    <div class="options-grid" id="cleanup-options"></div>
+                </div>
+
+                <!-- STEP 4: EXTRACTION REPORT -->
+                <div id="phase-report" class="hidden">
+                    <p><strong style="color:var(--money-green);">Operation Completed Summary</strong></p>
+                    <div id="report-details" style="background:#09090f; padding:15px; border-radius:4px; line-height:1.6; font-size:0.9rem;"></div>
+                    <button class="btn-action" onclick="closeContract()" style="margin-top:15px; width:100%; background:green;">Archive File & Transfer Funds</button>
+                </div>
+
+                <div class="console-box" id="op-console">Awaiting physical tactical parameters...</div>
             </div>
+
         </div>
 
-        <!-- Active Operation Screen -->
-        <div id="screen-ops" class="panel hidden">
-            <div class="panel-title" id="ops-title">Operation: Target</div>
-            <p id="ops-description" style="color: var(--text-dark);"></p>
-            
-            <div class="progress-container">
-                <div class="progress-bar" id="ops-progress"></div>
+        <!-- Right Side: Black Market Inventory Panel -->
+        <div class="side-column">
+            <div class="panel" style="height: calc(100% - 40px);">
+                <div class="panel-title">Underground Arms Market</div>
+                <p style="font-size:0.75rem; color:var(--text-dark); margin-top:-10px; margin-bottom:15px;">Assets required to complete execution schemes. Keep balances green.</p>
+                <div id="market-container"></div>
             </div>
-
-            <!-- STAGE 1: EXECUTION -->
-            <div id="stage-execute" class="game-step">
-                <p><strong>Stage 1: Choose Your Method of Execution</strong></p>
-                <p style="font-size:0.85rem; color:#aaa;">Higher risk generates more evidence but takes less physical energy.</p>
-                <div class="action-buttons">
-                    <button onclick="processExecution('Stealth/Poison', 10, 15)">Poison / Subtlety (Req: 20 Energy, Low Evidence)</button>
-                    <button onclick="processExecution('Blunt Force', 35, 45)">Brute Force (Req: 40 Energy, High Evidence)</button>
-                </div>
-            </div>
-
-            <!-- STAGE 2: DISPOSAL -->
-            <div id="stage-disposal" class="game-step">
-                <p><strong>Stage 2: Body Disposal</strong></p>
-                <p style="font-size:0.85rem; color:#aaa;">Where will you hide the package? Smarter choices depend on your IQ.</p>
-                <div class="action-buttons">
-                    <button onclick="processDisposal('Acid Bath', 5, 120)">Dissolve in Acid (Req: 120 IQ, Leaves minor evidence)</button>
-                    <button onclick="processDisposal('Buried Deep', 25, 90)">Bury in Woods (Req: 90 IQ, Leaves moderate evidence)</button>
-                </div>
-            </div>
-
-            <!-- STAGE 3: CLEANUP -->
-            <div id="stage-cleanup" class="game-step">
-                <p><strong>Stage 3: Evidence Management</strong></p>
-                <p style="font-size:0.85rem; color:#aaa;">Spend extra effort to scrub forensic footprints. Cleaner jobs pay massive bonuses.</p>
-                <div class="action-buttons">
-                    <button onclick="processCleanup('Bleach & Burn', 15, -25)">Meticulous Scrub (-15 Energy, Reduces Evidence significantly)</button>
-                    <button onclick="processCleanup('Rushed Wipe', 5, -5)">Quick Wipe (-5 Energy, Reduces Evidence slightly)</button>
-                </div>
-            </div>
-
-            <!-- STAGE 4: REPORT -->
-            <div id="stage-report" class="game-step">
-                <p><strong>Operation Concluded</strong></p>
-                <div id="report-summary" style="background:#222; padding:10px; border-radius:4px; line-height: 1.6;"></div>
-                <div class="action-buttons">
-                    <button onclick="finishMission()" style="grid-column: span 2; border-color: green;">Collect Payout & Return to Shadows</button>
-                </div>
-            </div>
-
-            <div class="log-box" id="ops-log">System initialized... awaiting deployment.</div>
         </div>
 
     </div>
 
-    <!-- Game Over Screens -->
-    <div id="screen-gameover" class="panel game-over hidden">
-        <h1 id="gameover-title">BUSTED</h1>
-        <p id="gameover-message">The police gathered enough evidence to link you to the crime scenes.</p>
-        <button onclick="location.reload()" style="margin-top: 20px;">Restart Simulation</button>
+    <!-- Fatal States Terminal -->
+    <div id="panel-gameover" class="panel hidden" style="text-align: center; padding: 50px 20px;">
+        <h1 id="go-title" style="font-size: 2.5rem;">CRIMINAL PROFILE TERMINATED</h1>
+        <p id="go-msg" style="margin: 20px 0; color: var(--text-dark); font-size: 1.1rem;"></p>
+        <button class="btn-action" onclick="location.reload()">Re-initialize Clean Persona</button>
     </div>
 </div>
 
 <script>
-    // Game State
-    let player = {
-        money: 2500,
+    // Game Core State
+    let state = {
+        money: 4000,
         energy: 100,
         maxEnergy: 100,
         iq: 100,
         suspicion: 0,
-        completedMissions: 0
+        completed: 0
     };
 
-    let activeMission = null;
-    let currentEvidenceAccumulated = 0;
+    // Global Configuration Databases
+    const weaponMarket = {
+        hands:    { name: "Bare Hands / Garrote", price: 0, owned: true, bonusEvidence: 15 },
+        blade:    { name: "Ceramic Hunting Blade", price: 600, owned: false, bonusEvidence: 5 },
+        firearm:  { name: "Suppressed .22 Pistol", price: 1800, owned: false, bonusEvidence: -5 },
+        toxin:    { name: "Industrial Potassium Compound", price: 3500, owned: false, bonusEvidence: -20 }
+    };
 
-    // Generated Missions Repository (100 Missions)
-    const targets = ["The Corrupt Politician", "The Corporate Snitch", "A Rival Syndicate Enforcer", "The Loan Shark", "The Blackmailer", "A Loose End Chemist", "The Inside Man", "The Dirty Cop"];
-    const clients = ["Anonymous Executive", "Gotti Crime Family", "The Broker", "A Jealous Spouse", "Betrayed Partner", "The Underworld Kingpin"];
-    
-    let missionsDatabase = [];
+    // Dramas, targets, configurations
+    const victims = ["Real Estate Mogul", "Cartel Courier", "Blackmail Journalist", "Tech Whistleblower", "Judicial Witness", "Underbelly Loan Sharks", "Vegas Floor Manager"];
+    const dramaStories = [
+        "The target is highly paranoid and has hired two private personal guard units for the weekend.",
+        "The target is currently compromised and hiding inside an isolated drug den on the outskirts.",
+        "Target unexpectedly traveled with family. Collateral metrics are extremely volatile.",
+        "Target has severe asthma and heart conditions—could easily be made to look natural if setup carefully.",
+        "Target is actively looking over their shoulder, tipped off by a security leak in the underworld."
+    ];
 
-    function generateMissions() {
+    let missionsList = [];
+    let activeOp = null;
+    let opData = { basePay: 0, negotiatedPay: 0, currentEvidence: 0, selectedMethod: '', selectedTool: '' };
+
+    function initMissions() {
         for (let i = 1; i <= 100; i++) {
-            let target = targets[Math.floor(Math.random() * targets.length)];
-            let client = clients[Math.floor(Math.random() * clients.length)];
-            let basePayout = 1500 + (i * 150); // Harder/later missions pay more
-            
-            missionsDatabase.push({
+            let target = victims[Math.floor(Math.random() * victims.length)];
+            let drama = dramaStories[Math.floor(Math.random() * dramaStories.length)];
+            let basePay = 2000 + (i * 220);
+
+            missionsList.push({
                 id: i,
-                title: `Contract #${i}: ${target}`,
-                client: client,
-                payout: basePayout,
-                description: `Client '${client}' requires the permanent removal of ${target.toLowerCase()}. Proceed with extreme caution. Standard payouts apply with bonuses for sterile environments.`,
+                title: `Contract #${i}: Terminate ${target}`,
+                drama: drama,
+                basePay: basePay,
                 completed: false
             });
         }
     }
 
-    // Render Mission List
-    function renderMissions() {
-        const container = document.getElementById('mission-container');
-        container.innerHTML = '';
+    function drawUI() {
+        document.getElementById('stat-money').innerText = `$${state.money.toLocaleString()}`;
+        document.getElementById('stat-energy').innerText = `${state.energy}/${state.maxEnergy}`;
+        document.getElementById('stat-iq').innerText = state.iq;
+        document.getElementById('stat-suspicion').innerText = `${state.suspicion}%`;
+        document.getElementById('comp-count').innerText = state.completed;
 
-        // Display next 5 available, uncompleted missions to keep UI clean
-        let displayed = 0;
-        for (let i = 0; i < missionsDatabase.length; i++) {
-            let m = missionsDatabase[i];
-            if (!m.completed && displayed < 5) {
+        // Render Weapon Market
+        const mContainer = document.getElementById('market-container');
+        mContainer.innerHTML = '';
+        for (let key in weaponMarket) {
+            let item = weaponMarket[key];
+            let div = document.createElement('div');
+            div.className = `market-item ${item.owned ? 'owned' : ''}`;
+            
+            if (item.owned) {
+                div.innerHTML = `<span>${item.name}</span> <span style="color:var(--money-green); font-weight:bold;">[EQUIPPED]</span>`;
+            } else {
+                div.innerHTML = `
+                    <span>${item.name} (<span class="text-orange">$${item.price}</span>)</span>
+                    <button class="btn-action" style="padding:4px 8px; font-size:0.75rem;" onclick="buyWeapon('${key}')">Buy</button>
+                `;
+            }
+            mContainer.appendChild(div);
+        }
+
+        // Logic check checks
+        if (state.suspicion >= 100) {
+            endGame("FBI INDICTMENT", "Federal agents tracked matching biological metrics, weapon registries, and digital assets straight to your safehouse. Total asset seizure occurred.");
+        } else if (state.completed >= 100) {
+            endGame("THE PERFECT SHADOW", "You completed 100 paid global contracts. You are an untouchable urban myth.");
+        }
+    }
+
+    function drawMissions() {
+        const container = document.getElementById('feed-container');
+        container.innerHTML = '';
+        let count = 0;
+
+        for (let m of missionsList) {
+            if (!m.completed && count < 4) {
                 let card = document.createElement('div');
                 card.className = 'mission-card';
-                card.onclick = () => selectMission(m.id);
+                card.onclick = () => launchContract(m.id);
                 card.innerHTML = `
-                    <div class="mission-header">
+                    <div class="m-header">
                         <span>${m.title}</span>
-                        <span style="color: #ffd700;">$${m.payout.toLocaleString()}</span>
+                        <span style="color:var(--money-green);">$${m.basePay.toLocaleString()}</span>
                     </div>
-                    <div style="font-size:0.8rem; color:#aaa;">Client: ${m.client}</div>
+                    <div style="font-size:0.75rem; color:var(--text-dark); margin-top:5px; line-height:1.3;">${m.drama.substring(0, 75)}...</div>
                 `;
                 container.appendChild(card);
-                displayed++;
+                count++;
             }
         }
-        
-        if (displayed === 0 && player.completedMissions === 100) {
-            container.innerHTML = `<p style="color:#39ff14; text-align:center;">All 100 contracts fulfilled. You are the ultimate phantom.</p>`;
-        }
     }
 
-    // Update Stats UI
-    function updateUI() {
-        document.getElementById('stat-money').innerText = `$${player.money.toLocaleString()}`;
-        document.getElementById('stat-energy').innerText = `${player.energy}/${player.maxEnergy}`;
-        document.getElementById('stat-iq').innerText = player.iq;
-        document.getElementById('stat-suspicion').innerText = `${Math.min(100, Math.max(0, player.suspicion))}%`;
-        document.getElementById('completed-count').innerText = player.completedMissions;
-
-        if (player.suspicion >= 100) {
-            triggerGameOver(false, "BUSTED! The police constructed an airtight case against you. Life sentence.");
-        } else if (player.completedMissions >= 100) {
-            triggerGameOver(true, "VICTORY! You completed all 100 contracts and retired to a private island, undetected.");
-        }
-    }
-
-    // Interactive Actions
-    function trainIQ() {
-        if (player.money >= 500) {
-            player.money -= 500;
-            player.iq += 5;
-            logOps("Spent $500 studying forensic methodologies. IQ increased.");
-            updateUI();
+    function buyWeapon(id) {
+        let weapon = weaponMarket[id];
+        if (state.money >= weapon.price) {
+            state.money -= weapon.price;
+            weapon.owned = true;
+            appendConsole(`Acquired ${weapon.name} securely via dead-drop.`);
+            drawUI();
         } else {
-            alert("Insufficient funds to buy research material.");
+            alert("Insufficient untraceable funding.");
         }
     }
 
-    function restEnergy() {
-        player.energy = Math.min(player.maxEnergy, player.energy + 40);
-        logOps("Took a day off to recover physical strength.");
-        updateUI();
+    function trainStats(type, cost, value) {
+        if (state.money < cost) return alert("Insufficient operational funding.");
+        state.money -= cost;
+        if (type === 'iq') state.iq += value;
+        if (type === 'energy') state.energy = Math.min(state.maxEnergy, state.energy + value);
+        appendConsole(`Upgraded structural capabilities.`);
+        drawUI();
     }
 
-    // Mission Flow Dynamics
-    function selectMission(id) {
-        if (player.energy < 30) {
-            alert("You are too exhausted to plan a hit. Rest up first.");
+    // MISSION OPERATIONS INTERACTION
+    function launchContract(id) {
+        if (state.energy < 40) return alert("Physical systemic breakdown imminent. Rest first.");
+        
+        activeOp = missionsList.find(m => m.id === id);
+        opData = { basePay: activeOp.basePay, negotiatedPay: activeOp.basePay, currentEvidence: 0, selectedMethod: '', selectedTool: '' };
+
+        document.getElementById('panel-hub').classList.add('hidden');
+        document.getElementById('panel-operation').classList.remove('hidden');
+        document.getElementById('op-title').innerText = activeOp.title;
+        document.getElementById('op-drama-text').innerHTML = `<strong>CASE FILES & CURRENT DRAMA:</strong><br>${activeOp.drama}`;
+        
+        showPhase('negotiate', 15);
+        document.getElementById('op-console').innerText = "Client negotiation links open. Make your terms clear.";
+    }
+
+    function showPhase(phaseId, progress) {
+        document.getElementById('phase-negotiate').classList.add('hidden');
+        document.getElementById('phase-execution').classList.add('hidden');
+        document.getElementById('phase-disposal').classList.add('hidden');
+        document.getElementById('phase-cleanup').classList.add('hidden');
+        document.getElementById('phase-report').classList.add('hidden');
+
+        document.getElementById(`phase-${phaseId}`).classList.remove('hidden');
+        document.getElementById('op-progress').style.width = `${progress}%`;
+    }
+
+    function appendConsole(msg) {
+        const box = document.getElementById('op-console');
+        box.innerHTML += `<br>_ ${msg}`;
+        box.scrollTop = box.scrollHeight;
+    }
+
+    // PHASE 0: BARGAIN SYSTEM
+    function bargain(greedPercent) {
+        if (greedPercent === 0) {
+            appendConsole("Accepted standard contract rate.");
+            advanceToExecution();
             return;
         }
-        
-        activeMission = missionsDatabase.find(m => m.id === id);
-        currentEvidenceAccumulated = 0;
 
-        document.getElementById('screen-intel').classList.add('hidden');
-        document.getElementById('screen-ops').classList.remove('hidden');
-
-        document.getElementById('ops-title').innerText = activeMission.title;
-        document.getElementById('ops-description').innerText = activeMission.description;
-        
-        goToStage('execute', 25);
-        document.getElementById('ops-log').innerHTML = "Operation Initiated. Tracking target movements...";
-    }
-
-    function goToStage(stageName, progressPercentage) {
-        document.querySelectorAll('.game-step').forEach(step => step.classList.remove('active'));
-        document.getElementById(`stage-${stageName}`).classList.add('active');
-        document.getElementById('ops-progress').style.width = `${progressPercentage}%`;
-    }
-
-    function logOps(message) {
-        const logBox = document.getElementById('ops-log');
-        logBox.innerHTML += `<br>> ${message}`;
-        logBox.scrollTop = logBox.scrollHeight;
-    }
-
-    // Stage Processors
-    function processExecution(method, baseEvidence, energyCost) {
-        if (player.energy < energyCost) {
-            alert("Not enough physical energy to execute this option!");
+        let roll = Math.random() * 100;
+        if (greedPercent === 50 && roll < 25) {
+            // Client panicked and reported
+            state.suspicion += 30;
+            appendConsole("CRITICAL RISK: The client panicked due to your extortion attempt and broke contact! Risk parameters increased.");
+            abortContract();
             return;
         }
-        player.energy -= energyCost;
-        currentEvidenceAccumulated += baseEvidence;
-        
-        logOps(`Executed target using [${method}]. Energy Expended: -${energyCost}.`);
-        updateUI();
-        goToStage('disposal', 50);
-    }
 
-    function processDisposal(method, baseEvidence, reqIQ) {
-        if (player.iq < reqIQ) {
-            alert(`Your IQ (${player.iq}) is too low to successfully pull off an ${method} without leaving massive flaws. Try a simpler option.`);
+        if (greedPercent === 20 && roll < 10) {
+            appendConsole("Client rejected hazard pay terms. Forcing baseline rate execution.");
+            advanceToExecution();
             return;
         }
-        currentEvidenceAccumulated += baseEvidence;
-        
-        logOps(`Disposed of tracking elements via [${method}].`);
-        goToStage('cleanup', 75);
+
+        opData.negotiatedPay = Math.floor(opData.basePay * (1 + (greedPercent / 100)));
+        if (greedPercent === 20) state.suspicion += 5;
+        if (greedPercent === 50) state.suspicion += 15;
+
+        appendConsole(`Negotiation complete. Adjusted Contract Payment: $${opData.negotiatedPay.toLocaleString()}`);
+        advanceToExecution();
     }
 
-    function processCleanup(method, energyCost, evidenceModifier) {
-        if (player.energy < energyCost) {
-            alert("Too tired to scrub the crime scene efficiently. You have to rush it.");
-            return;
+    function advanceToExecution() {
+        // Build tools selection box based on what player owns
+        const toolSelect = document.getElementById('select-tool');
+        toolSelect.innerHTML = '';
+        for (let key in weaponMarket) {
+            if (weaponMarket[key].owned) {
+                let opt = document.createElement('option');
+                opt.value = key;
+                opt.innerText = `${weaponMarket[key].name} (Evidence Mod: ${weaponMarket[key].bonusEvidence})`;
+                toolSelect.appendChild(opt);
+            }
         }
-        player.energy -= energyCost;
-        currentEvidenceAccumulated = Math.max(0, currentEvidenceAccumulated + evidenceModifier);
-
-        logOps(`Sanitized active zones using [${method}]. Forensic footprint reduced.`);
-        generateReport();
+        showPhase('execution', 40);
     }
 
-    function generateReport() {
-        goToStage('report', 100);
-        
-        // Calculate dynamic bonus based on clean work
-        let evidenceRating = "";
-        let bonusMultiplier = 0;
+    // PHASE 1: EXECUTION RUNNER
+    function commitExecution() {
+        let method = document.getElementById('select-method').value;
+        let toolKey = document.getElementById('select-tool').value;
 
-        if (currentEvidenceAccumulated <= 5) {
-            evidenceRating = "Ghostly Clean (Perfect)";
-            bonusMultiplier = 0.50; // 50% bonus money
-        } else if (currentEvidenceAccumulated <= 20) {
-            evidenceRating = "Standard Hit";
-            bonusMultiplier = 0.15; // 15% bonus money
-        } else {
-            evidenceRating = "Sloppy Execution";
-            bonusMultiplier = 0;
-            player.suspicion += Math.floor(currentEvidenceAccumulated / 2); 
-        }
+        let energyCost = 0;
+        let baseEv = 0;
 
-        let basePay = activeMission.payout;
-        let bonusPay = Math.floor(basePay * bonusMultiplier);
-        let totalEarnings = basePay + bonusPay;
+        if (method === 'stalk') { energyCost = 35; baseEv = 15; }
+        if (method === 'blunt') { energyCost = 15; baseEv = 45; }
+        if (method === 'setup') { energyCost = 60; baseEv = 0; }
 
-        // Apply reward states
-        player.money += totalEarnings;
-        
-        let summaryHTML = `
-            <strong>Contract Status:</strong> Succeeded<br>
-            <strong>Base Contract Value:</strong> $${basePay.toLocaleString()}<br>
-            <strong>Forensic Footprint Remaining:</strong> ${currentEvidenceAccumulated} trace indices<br>
-            <strong>Scene Cleanliness Rating:</strong> <span style="color:#39ff14">${evidenceRating}</span><br>
-            <strong>Calculated Performance Bonus:</strong> $${bonusPay.toLocaleString()}<br><br>
-            <span style="color:#ffd700">Total Transferred to Off-shore Account: +$${totalEarnings.toLocaleString()}</span>
+        if (state.energy < energyCost) return alert("Insufficient stamina parameters to execute this method safely!");
+
+        state.energy -= energyCost;
+        opData.selectedMethod = method;
+        opData.selectedTool = toolKey;
+
+        // Cumulative evidence generation
+        opData.currentEvidence += (baseEv + weaponMarket[toolKey].bonusEvidence);
+        appendConsole(`Target terminated via method matrix. Initial forensic residue indices tracked.`);
+
+        // Build dynamically scaled IQ disposal choices
+        buildDisposalOptions();
+    }
+
+    // PHASE 2: DISPOSAL CHOICES
+    function buildDisposalOptions() {
+        const container = document.getElementById('disposal-options');
+        container.innerHTML = `
+            <button class="opt-btn" onclick="commitDisposal(35, 80)">Chop & Incinerate Industrial Plant (Req: 80 IQ, +10 Ev)</button>
+            <button class="opt-btn" onclick="commitDisposal(15, 120)">High-Grade Acidic Liquefaction (Req: 120 IQ, +2 Ev)</button>
+            <button class="opt-btn" onclick="commitDisposal(10, 0)">Shallow Forest Pit Burial (Req: 0 IQ, +35 Ev)</button>
         `;
-        
-        document.getElementById('report-summary').innerHTML = summaryHTML;
+        showPhase('disposal', 65);
     }
 
-    function finishMission() {
-        activeMission.completed = true;
-        player.completedMissions++;
-        
-        // Dynamic recovery between ops
-        player.energy = Math.min(player.maxEnergy, player.energy + 10);
-        
-        // Return view state
-        document.getElementById('screen-ops').classList.add('hidden');
-        document.getElementById('screen-intel').classList.remove('hidden');
-        
-        activeMission = null;
-        updateUI();
-        renderMissions();
+    function commitDisposal(evAdd, reqIq) {
+        if (state.iq < reqIq) return alert(`Your Criminal IQ (${state.iq}) is too low to parse this sophisticated technique.`);
+        opData.currentEvidence += evAdd;
+        appendConsole("Disposal matrix complete. Processing remaining scene cleanup...");
+        buildCleanupOptions();
     }
 
-    function triggerGameOver(isWin, message) {
-        document.getElementById('main-screen').classList.add('hidden');
-        const goScreen = document.getElementById('screen-gameover');
-        goScreen.classList.remove('hidden');
-        
-        if(isWin) {
-            document.getElementById('gameover-title').innerText = "MASTERMIND UNTOUCHABLE";
-            document.getElementById('gameover-title').style.color = "#39ff14";
+    // PHASE 3: CLEANUP SYSTEM
+    function buildCleanupOptions() {
+        const container = document.getElementById('cleanup-options');
+        container.innerHTML = `
+            <button class="opt-btn" onclick="commitCleanup(25, -25)">Meticulous Chemical Scrub (-25 Energy, -25 Evidence)</button>
+            <button class="opt-btn" onclick="commitCleanup(5, -5)">Superficial Fast Wipe Down (-5 Energy, -5 Evidence)</button>
+            <button class="opt-btn" onclick="commitCleanup(0, 0)">Flee Scene Immediately (0 Energy, 0 Cleanup)</button>
+        `;
+        showPhase('cleanup', 85);
+    }
+
+    function commitCleanup(energyCost, evMod) {
+        if (state.energy < energyCost) {
+            alert("Too physically exhausted. Rushing cleanup protocols by default.");
+            evMod = 0;
+        } else {
+            state.energy -= energyCost;
         }
-        document.getElementById('gameover-message').innerText = message;
+
+        opData.currentEvidence = Math.max(0, opData.currentEvidence + evMod);
+        generateFinalReport();
     }
 
-    // Initialization
-    generateMissions();
-    renderMissions();
-    updateUI();
+    // PHASE 4: FINAL EXTRACTION REPORT
+    function generateFinalReport() {
+        showPhase('report', 100);
+        let bonusMultiplier = 0;
+        let rating = "";
+
+        if (opData.currentEvidence <= 5) {
+            rating = "Clean Execution (Unblemished Phantom)";
+            bonusMultiplier = 0.40;
+        } else if (opData.currentEvidence <= 25) {
+            rating = "Nominal Operational Standard";
+            bonusMultiplier = 0.10;
+        } else {
+            rating = "Sloppy / Compromised Crime Scene";
+            bonusMultiplier = -0.20; // Fine deducted from base pay for cleanup brokerage costs
+            state.suspicion += Math.floor(opData.currentEvidence / 3);
+        }
+
+        let performanceBonus = Math.floor(opData.negotiatedPay * bonusMultiplier);
+        let finalPayout = opData.negotiatedPay + performanceBonus;
+
+        state.money += finalPayout;
+
+        document.getElementById('report-details').innerHTML = `
+            <strong>Target Contract Status:</strong> Terminated / Cleaned<br>
+            <strong>Adjusted Contract Value:</strong> $${opData.negotiatedPay.toLocaleString()}<br>
+            <strong>Forensic Footprint:</strong> ${opData.currentEvidence} trace points<br>
+            <strong>Syndicate Clean Rating:</strong> <span class="text-purple">${rating}</span><br>
+            <strong>Performance Adjustment Margin:</strong> $${performanceBonus.toLocaleString()}<br>
+            <hr style="border:0; border-top:1px solid #222;">
+            <span style="color:var(--money-green); font-weight:bold;">Net Account Destination Transfer: +$${finalPayout.toLocaleString()}</span>
+        `;
+        drawUI();
+    }
+
+    function closeContract() {
+        activeOp.completed = true;
+        state.completed++;
+        state.energy = Math.min(state.maxEnergy, state.energy + 15); // Small breather recovery
+
+        document.getElementById('panel-operation').classList.add('hidden');
+        document.getElementById('panel-hub').classList.remove('hidden');
+        
+        activeOp = null;
+        drawUI();
+        drawMissions();
+    }
+
+    function abortContract() {
+        setTimeout(() => {
+            document.getElementById('panel-operation').classList.add('hidden');
+            document.getElementById('panel-hub').classList.remove('hidden');
+            activeOp = null;
+            drawUI();
+            drawMissions();
+        }, 3000);
+    }
+
+    function endGame(title, msg) {
+        document.getElementById('main-interface').classList.add('hidden');
+        const go = document.getElementById('panel-gameover');
+        go.classList.remove('hidden');
+        document.getElementById('go-title').innerText = title;
+        document.getElementById('go-msg').innerText = msg;
+    }
+
+    // Initialization Sequence
+    initMissions();
+    drawMissions();
+    drawUI();
 </script>
 
 </body>
 </html>
+                    
