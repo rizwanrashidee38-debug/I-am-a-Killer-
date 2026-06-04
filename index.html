@@ -1,1 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Slate: The Cleaner's Career</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --panel-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent-color: #8b0000;
+            --accent-hover: #b30000;
+            --success-color: #2e7d32;
+            --warning-color: #ef6c00;
+        }
 
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--panel-bg);
+            border: 2px solid var(--accent-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(139, 0, 0, 0.3);
+        }
+
+        h1, h2, h3 {
+            color: var(--accent-color);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 0;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            background: #151515;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .stat-item {
+            font-size: 0.9rem;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .screen {
+            display: none;
+            min-height: 300px;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #333;
+        }
+
+        .evidence-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .evidence-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #252525;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #444;
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-radius: 3px;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn:disabled {
+            background-color: #444;
+            color: #777;
+            cursor: not-allowed;
+        }
+
+        .btn-action {
+            padding: 5px 15px;
+            font-size: 0.9rem;
+        }
+
+        .log-container {
+            background: #0a0a0a;
+            color: #00ff00;
+            padding: 15px;
+            font-size: 0.85rem;
+            border-radius: 5px;
+            height: 120px;
+            overflow-y: auto;
+            margin-top: 15px;
+            border: 1px solid #222;
+        }
+
+        .progress-container {
+            background-color: #333;
+            border-radius: 13px;
+            padding: 3px;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            background-color: var(--warning-color);
+            width: 0%;
+            height: 10px;
+            border-radius: 10px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        .game-over-text {
+            color: var(--accent-color);
+            font-size: 2rem;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <div class="stats-bar">
+        <div class="stat-item">Career Scale: <span id="stat-murder-count" class="stat-value">Murder 1/100</span></div>
+        <div class="stat-item">Location: <span id="stat-location" class="stat-value">Mumbai, Maharashtra</span></div>
+        <div class="stat-item">Heat Level: <span id="stat-heat" class="stat-value">0%</span></div>
+    </div>
+
+    <div id="screen-start" class="screen active">
+        <h2>Clean Slate</h2>
+        <div class="description">
+            You are India's most meticulous shadow. Your dark work spans across the vast sub-continent, from the crowded chawls of Mumbai to the foggy valleys of Himachal. But execution is only 10% of the job. The real art is the cleanup. <br><br>
+            Vanish every trace before the local police precinct takes over. Reach Murder 100 without getting caught to become an urban legend. One slip, and your career ends in a maximum-security prison.
+        </div>
+        <button class="btn" onclick="startNextMurder()">Begin the Journey</button>
+    </div>
+
+    <div id="screen-cleanup" class="screen">
+        <h3>Phase 1: The Cleanup</h3>
+        <div id="cleanup-desc" class="description"></div>
+        
+        <div class="evidence-list" id="evidence-container"></div>
+
+        <div>
+            <button id="btn-proceed-investigation" class="btn" onclick="startInvestigation()" style="width: 100%;">Leave Scene & Face Investigation</button>
+            <div class="log-container" id="cleanup-log"></div>
+        </div>
+    </div>
+
+    <div id="screen-investigation" class="screen">
+        <h3>Phase 2: Police Investigation</h3>
+        <div id="investigation-desc" class="description"></div>
+        
+        <div>
+            <label style="font-size: 0.9rem;">Current Police Detection Risk:</label>
+            <div class="progress-container">
+                <div id="risk-bar" class="progress-bar"></div>
+            </div>
+        </div>
+
+        <div class="log-container" id="investigation-log" style="height: 150px; margin-bottom: 20px;"></div>
+
+        <button id="btn-next-turn" class="btn" onclick="processInvestigationTurn()" style="width: 100%;">Wait for Next Day's Report</button>
+    </div>
+
+    <div id="screen-gameover" class="screen">
+        <div id="gameover-title" class="game-over-text">CAUGHT</div>
+        <div id="gameover-desc" class="description"></div>
+        <button class="btn" onclick="restartGame()" style="width: 100%;">Try Again From Scratch</button>
+    </div>
+</div>
+
+<script>
+    let career = {
+        murderCount: 1,
+        heat: 0,
+        currentLocation: "",
+        currentSceneDesc: ""
+    };
+
+    const regions = [
+        { city: "Mumbai", state: "Maharashtra", desc: "A luxury high-rise flat overlooking the Arabian Sea." },
+        { city: "Kolkata", state: "West Bengal", desc: "An old, decaying ancestral mansion in North Kolkata." },
+        { city: "Delhi", state: "NCR", desc: "An isolated farmhouse on the outskirts of Mehrauli." },
+        { city: "Bengaluru", state: "Karnataka", desc: "A tech-park basement server room during a night shift." },
+        { city: "Goa", state: "Goa", desc: "A secluded shack on a dark, uncommercialized beach in South Goa." },
+        { city: "Amritsar", state: "Punjab", desc: "An expansive mustard field hidden behind a rural highway." },
+        { city: "Guwahati", state: "Assam", desc: "A tea-estate manager's bungalow surrounded by dense foliage." },
+        { city: "Shimla", state: "Himachal Pradesh", desc: "A snow-isolated wooden cabin off the Mall Road ridge." },
+        { city: "Kochi", state: "Kerala", desc: "A traditional wooden houseboat anchored deep in the backwaters." },
+        { city: "Varanasi", state: "Uttar Pradesh", desc: "An abandoned alleyway near the ancient burning ghats." }
+    ];
+
+    const evidenceTypes = [
+        { name: "Blood Splatters", risk: 25, cleanText: "Scrubbed with Luminol-destroying bleach.", time: 1 },
+        { name: "Murder Weapon", risk: 35, cleanText: "Wiped fingerprints and melted in a makeshift forge.", time: 1 },
+        { name: "CCTV Footage", risk: 30, cleanText: "Corrupted the local server hard drives with a magnet.", time: 1 },
+        { name: "Victim's Smartphone", risk: 20, cleanText: "Smashed, battery punctured, and thrown into a river.", time: 1 },
+        { name: "Stray Hair & Fibers", risk: 15, cleanText: "Burnt the entire area carefully with a mini blowtorch.", time: 1 },
+        { name: "Shattered Glass / Struggle Signs", risk: 15, cleanText: "Vacuumed up and rearranged the furniture meticulously.", time: 1 }
+    ];
+
+    let activeEvidences = [];
+    let investigationDay = 0;
+    let baseSceneRisk = 0;
+
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    function startNextMurder() {
+        if (career.murderCount > 100) {
+            endGame(true);
+            return;
+        }
+
+        let region = regions[(career.murderCount - 1) % regions.length];
+        career.currentLocation = `${region.city}, ${region.state}`;
+        career.currentSceneDesc = region.desc;
+
+        document.getElementById('stat-murder-count').innerText = `Murder ${career.murderCount}/100`;
+        document.getElementById('stat-location').innerText = career.currentLocation;
+        document.getElementById('stat-heat').innerText = `${Math.min(100, Math.floor(career.heat))}%`;
+
+        activeEvidences = [];
+        let numEvidence = 3 + Math.floor(Math.random() * 3);
+        let shuffledTypes = [...evidenceTypes].sort(() => 0.5 - Math.random());
+        
+        for(let i=0; i < Math.min(numEvidence, shuffledTypes.length); i++) {
+            activeEvidences.push({
+                ...shuffledTypes[i],
+                cleaned: false,
+                dynamicRisk: shuffledTypes[i].risk + Math.floor(career.murderCount * 0.2)
+            });
+        }
+
+        document.getElementById('cleanup-desc').innerHTML = `<strong>Target ${career.murderCount} completed.</strong> Location: ${career.currentSceneDesc}<br><br>The local police will secure the perimeter soon. Clean what you can. Every piece left behind compounds your risk.`;
+        
+        let container = document.getElementById('evidence-container');
+        container.innerHTML = "";
+        
+        let log = document.getElementById('cleanup-log');
+        log.innerHTML = "SYSTEM: Scene secured. Time is limited. Choose what to wipe.";
+
+        activeEvidences.forEach((ev, index) => {
+            let div = document.createElement('div');
+            div.className = "evidence-item";
+            div.id = `ev-${index}`;
+            div.innerHTML = `
+                <div>
+                    <strong>${ev.name}</strong><br>
+                    <span style="font-size:0.8rem; color:#aaa;">Potential Risk Contribution: +${ev.dynamicRisk}%</span>
+                </div>
+                <button class="btn btn-action" id="btn-clean-${index}" onclick="cleanEvidence(${index})">Vanish</button>
+            `;
+            container.appendChild(div);
+        });
+
+        document.getElementById('btn-proceed-investigation').innerText = "Leave Scene & Face Investigation";
+        showScreen('screen-cleanup');
+    }
+
+    function cleanEvidence(index) {
+        if(activeEvidences[index].cleaned) return;
+
+        activeEvidences[index].cleaned = true;
+  
